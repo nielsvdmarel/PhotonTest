@@ -8,3 +8,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SandBoxes/NielsTestScene.unity
     guid: e4d3023b565d7fc43bc377301622e317
+  - enabled: 1
+    path: Assets/Scenes/SandBoxes/CameraScene.unity
+    guid: 1c6984d4a48c1294eb04f8258a7af594

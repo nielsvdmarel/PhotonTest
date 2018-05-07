@@ -79,7 +79,7 @@ MonoBehaviour:
   motionBlur:
     m_Enabled: 1
     m_Settings:
-      shutterAngle: 270
+      shutterAngle: 129
       sampleCount: 10
       frameBlending: 0
   eyeAdaptation:
@@ -104,7 +104,7 @@ MonoBehaviour:
         threshold: 1.89
         softKnee: 0.5
         radius: 4
-        antiFlicker: 0
+        antiFlicker: 1
       lensDirt:
         texture: {fileID: 0}
         intensity: 3
@@ -112,7 +112,7 @@ MonoBehaviour:
     m_Enabled: 1
     m_Settings:
       tonemapping:
-        tonemapper: 2
+        tonemapper: 1
         neutralBlackIn: 0.07
         neutralWhiteIn: 9.4
         neutralBlackOut: 0

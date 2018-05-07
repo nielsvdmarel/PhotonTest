@@ -13,6 +13,8 @@ public class PhotonNetworkManager : Photon.MonoBehaviour
     private GameObject _lobbyCamera;
     [SerializeField]
     private Transform _spawnPoints;
+    [SerializeField]
+    private GameObject _PlayerCamera;
 	void Start ()
     {
         PhotonNetwork.ConnectUsingSettings("Version 0.1");
@@ -28,11 +30,12 @@ public class PhotonNetworkManager : Photon.MonoBehaviour
     public virtual void OnJoinedRoom()
     {
         PhotonNetwork.Instantiate(_player.name, _spawnPoints.position, _spawnPoints.rotation, 0);
+        //PhotonNetwork.Instantiate(_player.name, _spawnPoints.position, _spawnPoints.rotation, 0);
         _lobbyCamera.SetActive(false);
     }
     
     void Update ()
     {
-        _connectText.text = PhotonNetwork.connectionStateDetailed.ToString(); 
+        //_connectText.text = PhotonNetwork.connectionStateDetailed.ToString(); 
 	}
 }

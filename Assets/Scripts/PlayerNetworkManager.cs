@@ -6,7 +6,7 @@ public class PlayerNetworkManager : MonoBehaviour
 {
     [SerializeField] private Transform playerCamera;
     [SerializeField] private MonoBehaviour[] playerControlScripts;
-
+    [SerializeField]
     private PhotonView photonview;
 
     private void Start()
