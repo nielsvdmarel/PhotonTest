@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovementInput : MonoBehaviour {
+public class MovementInput : MonoBehaviour
+{
     [Header("Needed components")]
     [SerializeField]
     private Rigidbody rb;
@@ -75,7 +76,7 @@ public class MovementInput : MonoBehaviour {
         rb = this.GetComponent<Rigidbody>();
         anim = this.GetComponent<Animator>();
         GravityCollider = this.GetComponent<CapsuleCollider>();
-        IsPointedGrounded = true;
+        IsPointedGrounded = false;
         cam = Camera.main;
         controller = this.GetComponent<CharacterController>();
         WalkingRunning = 0;
@@ -90,6 +91,7 @@ public class MovementInput : MonoBehaviour {
         keepGrounded();
         FallingLanding();
         CheckChrouching();
+        PhysicsFallingFunction();
         if (Input.GetKeyDown(KeyCode.LeftAlt))
         {
             blockRotationPlayer = true;
@@ -138,7 +140,7 @@ public class MovementInput : MonoBehaviour {
 
         anim.SetFloat("InputZ", InputZ, 0.0f, Time.deltaTime * 2);
         anim.SetFloat("InputX", InputX, 0.0f, Time.deltaTime * 2);
-        
+
         //calculate the input magnitude
         Speed = new Vector2(InputX, InputZ).sqrMagnitude;
 
@@ -154,7 +156,7 @@ public class MovementInput : MonoBehaviour {
         }
 
         anim.SetFloat("Speed", WalkingRunning);
-        
+
     }
 
     void keepGrounded()
@@ -178,9 +180,9 @@ public class MovementInput : MonoBehaviour {
 
     void CheckForJumpRunInput()
     {
-        if (Input.GetKey(KeyCode.W)|| Input.GetKey(KeyCode.A)||Input.GetKey(KeyCode.S)||Input.GetKey(KeyCode.D))  // && Input.GetKey(KeyCode.LeftShift)
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))  // && Input.GetKey(KeyCode.LeftShift)
         {
-            if (Input.GetKeyDown(KeyCode.Space) && !JumpRunGreaterHight && !JumpRun && GroundCheckFloat <1.2)
+            if (Input.GetKeyDown(KeyCode.Space) && !JumpRunGreaterHight && !JumpRun && GroundCheckFloat < 4)
             {
                 if (HighJump == false)
                 {
@@ -190,7 +192,7 @@ public class MovementInput : MonoBehaviour {
                     anim.SetBool("JumpRun", true);
                     JumpRun = true;
                 }
-                else if(HighJump == true && !IsStandingNearWall)
+                else if (HighJump == true && !IsStandingNearWall)
                 {
                     Debug.Log("HighJump");
                     UsePhysics = true;
@@ -200,9 +202,10 @@ public class MovementInput : MonoBehaviour {
                     rb.AddForce(transform.forward * forwardPower, ForceMode.Impulse);
                     blockRotationPlayer = true;
                     JumpRunGreaterHight = true;
+                    IsPointedGrounded = false; // effe kieken
                 }
             }
-         }
+        }
 
         else
         {
@@ -216,7 +219,7 @@ public class MovementInput : MonoBehaviour {
 
         if (JumpRun)
         {
-            
+
             IsPointedGrounded = false;
             if (anim.GetCurrentAnimatorStateInfo(0).IsName("JumpNew"))
             {
@@ -226,7 +229,7 @@ public class MovementInput : MonoBehaviour {
                     JumpRun = false;
                     anim.SetBool("JumpRun", false);
                     Debug.Log("after on jump return to normal anim");
-                    IsPointedGrounded = true;
+                    //IsPointedGrounded = true;
                     blockRotationPlayer = false;
                 }
             }
@@ -239,7 +242,7 @@ public class MovementInput : MonoBehaviour {
                     JumpRun = false;
                     anim.SetBool("SmallJump", false);
                     Debug.Log("after on jump return to normal anim");
-                    IsPointedGrounded = true;
+                    //IsPointedGrounded = true;
                     blockRotationPlayer = false;
                 }
             }
@@ -251,7 +254,7 @@ public class MovementInput : MonoBehaviour {
         if (Input.GetKey(KeyCode.LeftShift))
         {
             WalkingRunning += 1.3f * Time.deltaTime;
-            if(WalkingRunning > max)
+            if (WalkingRunning > max)
             {
                 WalkingRunning = 1;
                 //aah lelijk niels
@@ -260,7 +263,7 @@ public class MovementInput : MonoBehaviour {
         if (!Input.GetKey(KeyCode.LeftShift))
         {
             WalkingRunning -= .3f * Time.deltaTime;
-            if (WalkingRunning <min)
+            if (WalkingRunning < min)
             {
                 //aah lelijk niels
                 WalkingRunning = 0;
@@ -278,7 +281,7 @@ public class MovementInput : MonoBehaviour {
             anim.applyRootMotion = false;
             rb.useGravity = true;
         }
-      
+
     }
 
     void RootMotionMovement()
@@ -301,19 +304,19 @@ public class MovementInput : MonoBehaviour {
             {
                 IsCrouching = true;
             }
-        }   
-            if (crouchControl > 0 && !IsCrouching)
-            {
-                crouchControl -= 4f * Time.deltaTime;
-                anim.SetLayerWeight(1, crouchControl);
-            }
-       
-            if (crouchControl < 1 && IsCrouching)
-            {
-                crouchControl += 4f * Time.deltaTime;
-                anim.SetLayerWeight(1, crouchControl);
-            }
         }
+        if (crouchControl > 0 && !IsCrouching)
+        {
+            crouchControl -= 4f * Time.deltaTime;
+            anim.SetLayerWeight(1, crouchControl);
+        }
+
+        if (crouchControl < 1 && IsCrouching)
+        {
+            crouchControl += 4f * Time.deltaTime;
+            anim.SetLayerWeight(1, crouchControl);
+        }
+    }
 
     void FallingLanding()
     {
@@ -336,7 +339,7 @@ public class MovementInput : MonoBehaviour {
                         anim.SetBool("Freemove", true);
                         anim.SetBool("JumpRunGreaterHeight", false);
                         blockRotationPlayer = true;
-                        IsPointedGrounded = true;
+                        //IsPointedGrounded = true;
                     }
                 }
             }
@@ -344,8 +347,8 @@ public class MovementInput : MonoBehaviour {
 
         if (anim.GetNextAnimatorStateInfo(0).IsName("FreeMove2")) // wtf niels elke keer als animatie state FreeMove2 de volgende state is, wordt rotatie aangezet? wtfffff
         {
-                Debug.Log("nu weer rotaten");
-                blockRotationPlayer = false;
+            Debug.Log("nu weer rotaten");
+            blockRotationPlayer = false;
         }
     }
 
@@ -355,11 +358,11 @@ public class MovementInput : MonoBehaviour {
         RaycastHit GroundCheckHit;
         RaycastHit FaultCheckHit;
         RaycastHit WallDistanceCheckHit;
-        if(Physics.Raycast(NormalJumpCheckObject.transform.position, Vector3.down, out JumpCheck))
+        if (Physics.Raycast(NormalJumpCheckObject.transform.position, Vector3.down, out JumpCheck))
         {
             NormalJumpCheckObjectFloat = JumpCheck.distance;
         }
-        if(NormalJumpCheckObjectFloat > 1.4) // DIT WORDT WAARDE VAN GROND MIN, GROND IS DUS VERDER WEG DAN KLEINE JUMP
+        if (NormalJumpCheckObjectFloat > 1.4) // DIT WORDT WAARDE VAN GROND MIN, GROND IS DUS VERDER WEG DAN KLEINE JUMP
         {
             HighJump = true;
         }
@@ -368,7 +371,7 @@ public class MovementInput : MonoBehaviour {
         {
             HighJump = false;
         }
-       
+
         if (Physics.Raycast(GroundCheckDistance.transform.position, Vector3.down, out GroundCheckHit))
         {
             GroundCheckFloat = GroundCheckHit.distance;
@@ -381,7 +384,7 @@ public class MovementInput : MonoBehaviour {
         {
             NearGround = false;
         }
-       
+
         if (Physics.Raycast(WalldetectionObject.transform.position, transform.forward, out WallDistanceCheckHit))
         {
             WallCheckFloat = WallDistanceCheckHit.distance;
@@ -394,7 +397,7 @@ public class MovementInput : MonoBehaviour {
         {
             IsStandingNearWall = false;
         }
-        
+
 
     }
 
@@ -409,4 +412,33 @@ public class MovementInput : MonoBehaviour {
         }
     }
 
+    private void PhysicsFallingFunction()
+    {
+        if (!JumpRunGreaterHight)
+        {
+            if (!controller.isGrounded)
+            {
+                if (GroundCheckFloat > 1.7)
+                {
+                    //IsPointedGrounded = false;
+                    anim.SetBool("NormalIdelFall", true);
+                    UsePhysics = true;
+                }
+
+                else if (GroundCheckFloat < 1.7)
+                {
+                    //IsPointedGrounded = true;
+                    Debug.Log("werkt met hoogte");
+                    if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime > 1)
+                    {
+                        Debug.Log("nu weer kunnen bewegen");
+                        anim.SetBool("Freemove", true);
+                        UsePhysics = false;
+                        RootMotionMovement();
+                        anim.SetBool("NormalIdelFall", false);
+                    }
+                }
+            }
+        }
+    }
 }
